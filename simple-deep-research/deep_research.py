@@ -2,6 +2,9 @@ import asyncio
 from agents import Agent, WebSearchTool, Runner
 from pydantic import BaseModel
 from typing import List
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ======= DEFINE THINKER AGENT =======
 
@@ -88,8 +91,8 @@ writer = Agent(
 
 class DeepResearcher:
     def __init__(self):
-        self.findings = []
-        self.thinking = []
+        self.thoughts = []  # Thoughts produced by the thinker agent
+        self.findings = []  # Findings produced by the researcher agent
         self.current_iteration = 1
 
     async def run(self, query: str, iterations: int = 4):
@@ -106,7 +109,7 @@ class DeepResearcher:
     async def _do_thinking(self, query: str):
 
         historical_context = ""
-        for i, thought in enumerate(self.thinking):
+        for i, thought in enumerate(self.thoughts):
             historical_context += f"ITERATION {i+1}:\n"
             historical_context += f"THOUGHT:\n{thought}\n"
             historical_context += f"FINDINGS:\n{self.findings[i]}\n\n"
@@ -122,7 +125,7 @@ class DeepResearcher:
             thinker,
             thinking_input
         )
-        self.thinking.append(thinker_response.final_output)
+        self.thoughts.append(thinker_response.final_output)
 
         thought = thinker_response.final_output
         print(f"========== ITERATION {self.current_iteration} ==========\n")
@@ -164,7 +167,7 @@ class DeepResearcher:
 
 if __name__ == "__main__":
     # Run the deep research
-    query = "Write a report on Plato and his main works"
+    query = "Provide a deep-dive on the best platforms for video content creators to monetize their content and audience in 2025"
     iterations = 4
     deep_researcher = DeepResearcher()
     report = asyncio.run(deep_researcher.run(query, iterations))

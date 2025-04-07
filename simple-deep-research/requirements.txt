@@ -1,2 +1,3 @@
 openai-agents
 pydantic
+python-dotenv
